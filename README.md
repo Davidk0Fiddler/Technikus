@@ -499,3 +499,547 @@ A `w-100` 100%-os szélességet ad az elemnek. Gyakran használják teljes szél
 ### Leírás
 
 A `d-none` teljesen elrejti az elemet az oldalon. Reszponzív kombinációkban is gyakran használják.
+
+# Bootstrap + JavaScript elemek a vizsgafeladathoz
+
+## .navbar-expand-lg
+
+### Használat
+
+```html
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+</nav>
+```
+
+### Leírás
+
+A `navbar-expand-lg` azt szabályozza, hogy a menü mikor váltson mobilnézetre. Nagy kijelzőn vízszintesen jelenik meg a menü, kisebb kijelzőn hamburger menüre vált.
+
+---
+
+## .nav-item
+
+### Használat
+
+```html
+<li class="nav-item">
+```
+
+### Leírás
+
+A `nav-item` egy navigációs elem létrehozására szolgál a navbaron belül.
+
+---
+
+## .nav-link
+
+### Használat
+
+```html
+<a class="nav-link" href="#">
+    Menü
+</a>
+```
+
+### Leírás
+
+A `nav-link` Bootstrap stílust ad a navigációs hivatkozásoknak.
+
+---
+
+## .table-hover
+
+### Használat
+
+```html
+<table class="table table-hover">
+</table>
+```
+
+### Leírás
+
+A `table-hover` hover effektet ad a táblázat sorainak. Az egér fölévitelkor a sor kiemelődik.
+
+---
+
+## .table-responsive
+
+### Használat
+
+```html
+<div class="table-responsive">
+    <table class="table">
+    </table>
+</div>
+```
+
+### Leírás
+
+A `table-responsive` reszponzívvá teszi a táblázatot. Kisebb kijelzőn vízszintesen görgethető lesz.
+
+---
+
+## .alert-danger
+
+### Használat
+
+```html
+<div class="alert alert-danger">
+    Hiba történt!
+</div>
+```
+
+### Leírás
+
+Az `alert-danger` piros figyelmeztető dobozt készít. Hibák és sikertelen műveletek jelzésére használják.
+
+---
+
+## .alert-success
+
+### Használat
+
+```html
+<div class="alert alert-success">
+    Sikeres mentés!
+</div>
+```
+
+### Leírás
+
+Az `alert-success` zöld sikerüzenetet jelenít meg.
+
+---
+
+## .rounded-pill
+
+### Használat
+
+```html
+<button class="btn btn-primary rounded-pill">
+```
+
+### Leírás
+
+A `rounded-pill` teljesen lekerekített sarkokat készít, kapszula formát adva az elemnek.
+
+---
+
+## .vh-100
+
+### Használat
+
+```html
+<div class="vh-100">
+```
+
+### Leírás
+
+A `vh-100` az elem magasságát a teljes képernyő magasságára állítja.
+
+---
+
+## .list-group
+
+### Használat
+
+```html
+<ul class="list-group">
+```
+
+### Leírás
+
+A `list-group` Bootstrap stílust ad listákhoz.
+
+---
+
+## .list-group-item
+
+### Használat
+
+```html
+<li class="list-group-item">
+```
+
+### Leírás
+
+A `list-group-item` egy listaelemet formáz modern Bootstrap stílusban.
+
+---
+
+# JavaScript részek
+
+## onclick esemény
+
+### Használat
+
+```html
+<button onclick="uzenet()">
+    Kattints
+</button>
+```
+
+```javascript
+function uzenet() {
+    alert("Helló");
+}
+```
+
+### Leírás
+
+Az `onclick` esemény akkor fut le, amikor a felhasználó rákattint az elemre.
+
+---
+
+## onmouseleave esemény
+
+### Használat
+
+```html
+<li onmouseleave="pucol()">
+```
+
+### Leírás
+
+Az `onmouseleave` akkor fut le, amikor az egérkurzor elhagyja az adott elemet.
+
+---
+
+## innerHTML
+
+### Használat
+
+```javascript
+document.getElementById("lapozo").innerHTML = "Szöveg";
+```
+
+### Leírás
+
+Az `innerHTML` segítségével módosítani lehet egy HTML elem tartalmát JavaScriptből.
+
+---
+
+## getElementById()
+
+### Használat
+
+```javascript
+document.getElementById("adat")
+```
+
+### Leírás
+
+A `getElementById()` kiválaszt egy elemet az azonosítója alapján.
+
+---
+
+## querySelector()
+
+### Használat
+
+```javascript
+document.querySelector(".doboz")
+```
+
+### Leírás
+
+A `querySelector()` CSS szelektor alapján keres HTML elemet.
+
+---
+
+## addEventListener()
+
+### Használat
+
+```javascript
+gomb.addEventListener("click", function() {
+
+});
+```
+
+### Leírás
+
+Az `addEventListener()` eseménykezelőt rendel egy elemhez.
+
+---
+
+## alert()
+
+### Használat
+
+```javascript
+alert("Üzenet");
+```
+
+### Leírás
+
+Az `alert()` felugró üzenetablakot jelenít meg.
+
+---
+
+## console.error()
+
+### Használat
+
+```javascript
+console.error("API-hiba:", error);
+```
+
+### Leírás
+
+A `console.error()` hibát ír ki a böngésző fejlesztői konzoljára.
+
+---
+
+## fetch()
+
+### Használat
+
+```javascript
+fetch("https://dummyjson.com/users?limit=50")
+```
+
+### Leírás
+
+A `fetch()` API hívásra szolgál. Külső adatokat lehet vele lekérni.
+
+---
+
+## then()
+
+### Használat
+
+```javascript
+fetch(url)
+    .then(response => response.json())
+```
+
+### Leírás
+
+A `then()` a sikeres API válasz feldolgozására szolgál.
+
+---
+
+## catch()
+
+### Használat
+
+```javascript
+.catch(error => {
+    console.error(error);
+});
+```
+
+### Leírás
+
+A `catch()` kezeli az API vagy JavaScript hibákat.
+
+---
+
+## async
+
+### Használat
+
+```javascript
+async function adatok() {
+
+}
+```
+
+### Leírás
+
+Az `async` aszinkron függvényt hoz létre, amely várakozhat API válaszokra.
+
+---
+
+## await
+
+### Használat
+
+```javascript
+const response = await fetch(url);
+```
+
+### Leírás
+
+Az `await` megvárja egy aszinkron művelet befejezését.
+
+---
+
+## JSON feldolgozás
+
+### Használat
+
+```javascript
+const adat = await response.json();
+```
+
+### Leírás
+
+A `json()` a szerver JSON válaszát JavaScript objektummá alakítja.
+
+---
+
+## tömb bejárás forEach()
+
+### Használat
+
+```javascript
+adatok.forEach(adat => {
+
+});
+```
+
+### Leírás
+
+A `forEach()` végigmegy egy tömb összes elemén.
+
+---
+
+## tömb szűrés filter()
+
+### Használat
+
+```javascript
+const talalat = adatok.filter(
+    adat => adat.lastName == keresettNev
+);
+```
+
+### Leírás
+
+A `filter()` csak azokat az elemeket adja vissza, amelyek megfelelnek a feltételnek.
+
+---
+
+## value
+
+### Használat
+
+```javascript
+input.value
+```
+
+### Leírás
+
+A `value` egy input mező aktuális értékét adja vissza.
+
+---
+
+## DOM elem létrehozás
+
+### Használat
+
+```javascript
+const div = document.createElement("div");
+```
+
+### Leírás
+
+A `createElement()` új HTML elemet hoz létre JavaScriptből.
+
+---
+
+## appendChild()
+
+### Használat
+
+```javascript
+szulo.appendChild(div);
+```
+
+### Leírás
+
+Az `appendChild()` hozzáad egy elemet egy másik HTML elemhez.
+
+---
+
+## classList.add()
+
+### Használat
+
+```javascript
+div.classList.add("card");
+```
+
+### Leírás
+
+A `classList.add()` új CSS osztályt ad egy elemhez.
+
+---
+
+## textContent
+
+### Használat
+
+```javascript
+elem.textContent = "Szöveg";
+```
+
+### Leírás
+
+A `textContent` szöveget ír egy HTML elembe HTML értelmezés nélkül.
+
+---
+
+## text-indent
+
+### Használat
+
+```css
+p {
+    text-indent: 20px;
+}
+```
+
+### Leírás
+
+A `text-indent` a bekezdések első sorát beljebb húzza.
+
+---
+
+## text-align
+
+### Használat
+
+```css
+footer {
+    text-align: center;
+}
+```
+
+### Leírás
+
+A `text-align` a szöveg vízszintes igazítására szolgál.
+
+---
+
+## color
+
+### Használat
+
+```css
+a {
+    color: rgb(154,157,160);
+}
+```
+
+### Leírás
+
+A `color` a szöveg színét állítja be.
+
+---
+
+## padding
+
+### Használat
+
+```css
+#lapozo {
+    padding: 15px;
+}
+```
+
+### Leírás
+
+A `padding` belső térközt ad az elem tartalma köré.
