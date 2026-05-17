@@ -27,6 +27,8 @@ builder.Services.AddDbContext<PoolCarContext>(
  
 # Bootstrap osztályok
 
+https://getbootstrap.com/docs/5.0/getting-started/introduction/
+
 ## .container
 
 ### Használat
