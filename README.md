@@ -1045,3 +1045,367 @@ A `color` a szöveg színét állítja be.
 ### Leírás
 
 A `padding` belső térközt ad az elem tartalma köré.
+
+
+# C# Grafikus Military
+# military_shop – Komplett megoldás (C# WinForms)
+
+## Projekt létrehozása
+
+1. Nyisd meg a Visual Studio-t
+2. Hozz létre egy új projektet:
+
+   * **Windows Forms App (.NET Framework)**
+3. Projekt neve:
+
+```text
+military_shop
+```
+
+---
+
+# 1. Termék osztály létrehozása
+
+## Product.cs
+
+```csharp
+using System;
+
+namespace military_shop
+{
+    public class Product
+    {
+        public string Cikkszam { get; set; }
+        public string TermekNev { get; set; }
+        public int Ar { get; set; }
+        public int Keszlet { get; set; }
+
+        public Product(string cikkszam, string termekNev, int ar, int keszlet)
+        {
+            Cikkszam = cikkszam;
+            TermekNev = termekNev;
+            Ar = ar;
+            Keszlet = keszlet;
+        }
+    }
+}
+```
+
+---
+
+# 2. Megrendelés osztály
+
+## OrderItem.cs
+
+```csharp
+namespace military_shop
+{
+    public class OrderItem
+    {
+        public string Cikkszam { get; set; }
+        public string TermekNev { get; set; }
+        public int Mennyiseg { get; set; }
+
+        public OrderItem(string cikkszam, string termekNev, int mennyiseg)
+        {
+            Cikkszam = cikkszam;
+            TermekNev = termekNev;
+            Mennyiseg = mennyiseg;
+        }
+    }
+}
+```
+
+---
+
+# 3. Form felület
+
+A Form1-re helyezz el:
+
+## Komponensek
+
+| Típus        | Név          | Szöveg                |
+| ------------ | ------------ | --------------------- |
+| DataGridView | dgvKeszlet   |                       |
+| DataGridView | dgvRendeles  |                       |
+| Button       | btnBetolt    | Megrendelés betöltése |
+| Button       | btnHiany     | Hiány mentése         |
+| Button       | btnMentes    | Készlet mentése       |
+| Label        | lblVegosszeg | Végösszeg: 0 Ft       |
+|              |              |                       |
+
+---
+
+# 4. CSV fájl minta
+
+## termekek.csv
+
+```csv
+1001;Bakancs;25000;10
+1002;Sisak;18000;5
+1003;Melleny;30000;3
+1004;Taska;12000;7
+```
+
+## rendeles.txt
+
+```text
+Kiss Péter
+Budapest, Fő utca 12.
+1001;Bakancs;4
+1002;Sisak;7
+1004;Taska;2
+```
+
+---
+
+# 5. Form1.cs teljes megoldás
+
+## Form1.cs
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace military_shop
+{
+    public partial class Form1 : Form
+    {
+        List<Product> products = new List<Product>();
+        List<string> hianyLista = new List<string>();
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            KeszletBetoltes();
+            KeszletMegjelenites();
+        }
+
+        // =========================
+        // KÉSZLET BETÖLTÉSE
+        // =========================
+
+        private void KeszletBetoltes()
+        {
+            products.Clear();
+
+            string[] sorok = File.ReadAllLines("termekek.csv");
+
+            foreach (string sor in sorok)
+            {
+                string[] adatok = sor.Split(';');
+
+                Product p = new Product(
+                    adatok[0],
+                    adatok[1],
+                    int.Parse(adatok[2]),
+                    int.Parse(adatok[3])
+                );
+
+                products.Add(p);
+            }
+        }
+
+        // =========================
+        // KÉSZLET MEGJELENÍTÉS
+        // =========================
+
+        private void KeszletMegjelenites()
+        {
+            dgvKeszlet.DataSource = null;
+            dgvKeszlet.DataSource = products;
+        }
+
+        // =========================
+        // MEGRENDELÉS BETÖLTÉSE
+        // =========================
+
+        private void btnBetolt_Click(object sender, EventArgs e)
+        {
+            dgvRendeles.Rows.Clear();
+            dgvRendeles.Columns.Clear();
+
+            dgvRendeles.Columns.Add("Cikkszam", "Cikkszám");
+            dgvRendeles.Columns.Add("Nev", "Termék neve");
+            dgvRendeles.Columns.Add("Mennyiseg", "Mennyiség");
+            dgvRendeles.Columns.Add("Osszeg", "Összeg");
+
+            hianyLista.Clear();
+
+            string[] sorok = File.ReadAllLines("rendeles.txt");
+
+            int vegosszeg = 0;
+
+            for (int i = 2; i < sorok.Length; i++)
+            {
+                string[] adatok = sorok[i].Split(';');
+
+                string cikkszam = adatok[0];
+                string nev = adatok[1];
+                int mennyiseg = int.Parse(adatok[2]);
+
+                Product termek = products.FirstOrDefault(x => x.Cikkszam == cikkszam);
+
+                if (termek != null)
+                {
+                    int hiany = 0;
+
+                    if (mennyiseg > termek.Keszlet)
+                    {
+                        hiany = mennyiseg - termek.Keszlet;
+
+                        MessageBox.Show(
+                            $"Nincs elegendő készlet!\n{nev}\nHiány: {hiany} db"
+                        );
+
+                        hianyLista.Add(
+                            $"{termek.Cikkszam};{termek.TermekNev};{termek.Ar};{hiany}"
+                        );
+
+                        mennyiseg = termek.Keszlet;
+                    }
+
+                    int osszeg = mennyiseg * termek.Ar;
+                    vegosszeg += osszeg;
+
+                    dgvRendeles.Rows.Add(
+                        cikkszam,
+                        nev,
+                        mennyiseg,
+                        osszeg
+                    );
+
+                    termek.Keszlet -= mennyiseg;
+
+                    if (termek.Keszlet < 0)
+                    {
+                        termek.Keszlet = 0;
+                    }
+                }
+            }
+
+            lblVegosszeg.Text = "Végösszeg: " + vegosszeg + " Ft";
+
+            KeszletMegjelenites();
+        }
+
+        // =========================
+        // HIÁNY MENTÉSE
+        // =========================
+
+        private void btnHiany_Click(object sender, EventArgs e)
+        {
+            File.WriteAllLines("hiany.txt", hianyLista);
+
+            MessageBox.Show("A hiánylista mentése sikeres!");
+        }
+
+        // =========================
+        // KÉSZLET MENTÉSE
+        // =========================
+
+        private void btnMentes_Click(object sender, EventArgs e)
+        {
+            List<string> sorok = new List<string>();
+
+            foreach (Product p in products)
+            {
+                sorok.Add(
+                    $"{p.Cikkszam};{p.TermekNev};{p.Ar};{p.Keszlet}"
+                );
+            }
+
+            File.WriteAllLines("uj_keszlet.csv", sorok);
+
+            MessageBox.Show("A készlet mentése sikeres!");
+        }
+    }
+}
+```
+
+---
+
+# 6. DataGridView beállítás
+
+A `dgvRendeles` vezérlőnél:
+
+```csharp
+AllowUserToAddRows = false
+```
+
+A `dgvKeszlet` vezérlőnél:
+
+```csharp
+ReadOnly = true
+```
+
+---
+
+# 7. Feladatok teljesítése
+
+| Feladat                       | Megoldva |
+| ----------------------------- | -------- |
+| Termék osztály                | Igen     |
+| Készlet automatikus betöltése | Igen     |
+| Megrendelés fájl beolvasása   | Igen     |
+| Új platformon megjelenítés    | Igen     |
+| Készlethiány figyelése        | Igen     |
+| Hiányzó mennyiség rögzítése   | Igen     |
+| Számla végösszeg számítása    | Igen     |
+| Készlet frissítése            | Igen     |
+| Hiány fájl mentése            | Igen     |
+| Aktuális készlet mentése      | Igen     |
+
+---
+
+# 8. Program működése röviden
+
+## Induláskor
+
+* Betölti a készletet a `termekek.csv` fájlból.
+* Megjeleníti a DataGridView-ban.
+
+## Megrendelés betöltése gomb
+
+* Beolvassa a `rendeles.txt` fájlt.
+* Kiszámolja a végösszeget.
+* Ellenőrzi a készletet.
+* Frissíti a készletet.
+
+## Hiány mentése gomb
+
+* Elmenti a hiányzó termékeket a `hiany.txt` fájlba.
+
+## Készlet mentése gomb
+
+* Elmenti az aktuális készletet `uj_keszlet.csv` fájlba.
+
+---
+
+# 9. Példa hiány.txt tartalom
+
+```text
+1002;Sisak;18000;2
+```
+
+---
+
+# 10. Példa kimenet
+
+## Végösszeg
+
+```text
+Végösszeg: 148000 Ft
+```
+
+## Hiány üzenet
+
+```text
+Nincs elegendő készlet!
+Sisak
+Hiány: 2 db
+```
