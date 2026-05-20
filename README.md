@@ -22,7 +22,7 @@ public class DatabaseContext : DbContext
 
 ## Program.cs:
 builder.Services.AddDbContext<PoolCarContext>(  
-  db => db.UseSqlite(builder.Configuration.GetConnectionString("PoolCarContext"))); 
+  db => db.UseSqlite(builder.Configuration.GetConnectionString("DatabaseContext"))); 
 
  
 # Bootstrap osztályok
