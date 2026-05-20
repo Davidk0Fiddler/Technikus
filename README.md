@@ -1409,3 +1409,157 @@ Nincs elegendő készlet!
 Sisak
 Hiány: 2 db
 ```
+
+# Military saját megoldás:
+
+namespace military_shop
+{
+    public partial class Form1 : Form
+    {
+        public class Termek
+        {
+            public string TermekNev { get; set; }
+            public string Cikkszam { get; set; }
+            public int Ar { get; set; }
+            public int Keszlet { get; set; }
+        }
+
+        public class RendeltTermek
+        {
+            public string TermekNev { get; set; }
+            public string Cikkszam { get; set; }
+            public int Db { get; set; }
+        }
+
+        public class Rendeles
+        {
+            public int Darab { get; set; }
+            public string Nev { get; set; }
+            public string C�m { get; set; }
+            public List<RendeltTermek>? RendeltTermekek { get; set; }
+        }
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        public void LoadTermekek(List<Termek> termekek)
+        {
+            StreamReader sr = new StreamReader("termekek.csv");
+            sr.ReadLine(); //fejl�c �tugr�sa
+            while (!sr.EndOfStream)
+            {
+                string[] adatok = sr.ReadLine().Split(';');
+                termekek.Add(new Termek
+                {
+                    TermekNev = adatok[1],
+                    Cikkszam = adatok[2],
+                    Ar = int.Parse(adatok[4]),
+                    Keszlet = int.Parse(adatok[5])
+                });
+            }
+        }
+
+        public void LoadRendelesek(List<Rendeles> rendeles)
+        {
+            StreamReader sr = new StreamReader("megrendeles.txt");
+            string nev = sr.ReadLine();
+            string cim = sr.ReadLine();
+
+            List<RendeltTermek> rendeltTermekek = new List<RendeltTermek>();
+
+            while (!sr.EndOfStream)
+            {
+                string[] line = sr.ReadLine().Split(';');
+                rendeltTermekek.Add(new RendeltTermek
+                {
+                    Cikkszam = line[0],
+                    TermekNev = line[1],
+                    Db = int.Parse(line[2])
+                });
+            }
+
+            rendeles.Add(new Rendeles
+            {
+                Nev = nev,
+                C�m = cim,
+                RendeltTermekek = rendeltTermekek
+            });
+        }
+
+        public void FillTableWithTermekek(List<Termek> termekek)
+        {
+            listView1.Items.Clear();
+
+            foreach (var termek in termekek)
+            {
+                ListViewItem elem = new ListViewItem(termek.Cikkszam);
+                elem.SubItems.Add(termek.TermekNev);
+                elem.SubItems.Add(termek.Ar.ToString());
+                elem.SubItems.Add(termek.Keszlet.ToString());
+
+                listView1.Items.Add(elem);
+            }
+
+        }
+
+        public void FillRichTextBox()
+        {
+            richTextBox1.Text = " ";
+            foreach (var rendeles in rendelesek)
+            {
+                richTextBox1.Text += $"{rendeles.Nev} \n{rendeles.C�m} \n";
+
+                int ar = 0;
+
+                foreach (var item in rendeles.RendeltTermekek)
+                {
+                    if (item.Db <= termekek.FirstOrDefault(t => t.Cikkszam == item.Cikkszam).Keszlet)
+                    {
+                        richTextBox1.Text += $"{item.Cikkszam} | {item.TermekNev} | {item.Db} \n";
+                        ar += termekek.FirstOrDefault(t => t.Cikkszam == item.Cikkszam).Ar * item.Db;
+                    }
+                    else
+                    {
+                        richTextBox1.Text += $"{item.Cikkszam} | {item.TermekNev} | {item.Db} (Ennyi term�k nem rendelhet�!)\n";
+                    }
+                }
+
+                richTextBox1.Text += $"Fizetend� �sszeg: {ar}Ft \n\n";
+
+            }
+        }
+
+        List<Termek> termekek = new List<Termek>();
+        List<Rendeles> rendelesek = new List<Rendeles>();
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+            LoadTermekek(termekek);
+            FillTableWithTermekek(termekek);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LoadRendelesek(rendelesek);
+            FillRichTextBox();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            foreach (var rendeles in rendelesek)
+            {
+                foreach (var item in rendeles.RendeltTermekek)
+                {
+                    if (item.Db <= termekek.FirstOrDefault(t => t.Cikkszam == item.Cikkszam).Keszlet)
+                    {
+                        termekek.FirstOrDefault(t => t.Cikkszam == item.Cikkszam).Keszlet -= item.Db;
+                    }
+                }
+            }
+
+            FillTableWithTermekek(termekek);
+        }
+    }
+}
